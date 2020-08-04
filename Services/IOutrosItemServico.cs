@@ -10,6 +10,6 @@ namespace AlbertEinstein.Services
     {
         //IEnumerable<Medico> pesquisaMedicoNaConsulta(Consulta consulta);
 
-        string PesquisaTudo(Consulta consulta);
+        Task<string> PesquisaTudoAsync(Consulta consulta);
     }
 }

@@ -28,16 +28,16 @@ namespace AlbertEinstein.Services
         {
             return await _context.Consultas.Where(lambda => lambda.MedicoId == consulta.MedicoId && lambda.PacienteId == consulta.PacienteId && lambda.Data == consulta.Data).ToArrayAsync();
         }
-        public string PesquisaTudo(Consulta consulta)
+        public async Task<string> PesquisaTudoAsync(Consulta consulta)
         {
             if(pesquisaMedicoNaConsulta(consulta).Result.Count() == 0)
-                return "Médico NÃO cadastrado.";                
+                return await Task.FromResult<string>("Médico NÃO cadastrado.");                
             if(pesquisaPacienteNaConsulta(consulta).Result.Count() == 0)
-                return "Paciente NÃO cadastrado.";
+                return await Task.FromResult<string>("Paciente NÃO cadastrado.");
             if(pesquisaConsulta(consulta).Result.Count() != 0)
-                return "Consulta JÁ cadastrada, NÃO foi inserida nem alterada, use outro Paciente, Médico ou outra Data e Horário.";
+                return await Task.FromResult<string>("Consulta JÁ cadastrada, NÃO foi inserida nem alterada, use outro Paciente, Médico ou outra Data e Horário.");
 
-            return null;
+            return await Task.FromResult<string>(null);
         }
 
     }

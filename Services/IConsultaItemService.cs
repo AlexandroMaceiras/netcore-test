@@ -8,11 +8,13 @@ namespace Consultas.Services
 {
     public interface IConsultaItemService
     {
+        Task<IEnumerable<Consulta>> pesquisaConsultaPorIdAsync(int id);
         Task<IEnumerable<Consulta>> PeagaTodasConsultasAsync();
-
-        Task<IEnumerable<Medico>> pesquisaMedicoPorId(int id);
-
+        Task<IEnumerable<Medico>> pesquisaMedicoPorIdAsync(int id);
         Task<IEnumerable<Consulta>> ConsultasPorMedicoIdAsync(int id);
+        Task<bool> InserirConsultaAsync(Consulta consulta);
+        Task<int> EditarConsulta(Consulta consulta);
+        Task<bool> DeletarConsultaPorConsultaAsync(Consulta consulta);
 
     }
 }
