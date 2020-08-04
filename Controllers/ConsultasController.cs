@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace AlbertEinstein.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("/Async/IoC/[controller]")]
     public class ConsultasController: ControllerBase
     {
         IConsultaItemService _consultaService;
@@ -37,121 +37,95 @@ namespace AlbertEinstein.Controllers
  
         [Route("ListarTodasConsultasPorMedicoId")]
         [HttpGet]
-        public IActionResult ConsultaTodasPorMedicoId(int id)
+        public async Task<IActionResult> ConsultaTodasPorMedicoId(int id)
         {
-            if(_consultaService.pesquisaMedicoPorId(id).Result.Count() == 0)
+            var medico = await _consultaService.pesquisaMedicoPorIdAsync(id);
+
+            if(medico.Count() == 0)
                 return NotFound("Médico não encontrado, Id inexistente.");
 
-             var consulta = _consultaService.ConsultasPorMedicoIdAsync(id);
+             var consulta = await _consultaService.ConsultasPorMedicoIdAsync(id);
 
-             if(consulta.Result.Count() == 0)
-                return NotFound("Nenhuma consulta encontrata para este médico.");
+             if(consulta.Count() == 0)
+                return NotFound($"Nenhuma consulta encontrata para o médico {medico.FirstOrDefault().Nome}.");
 
              return Ok(consulta);
         }
-/*
+
         [Route("InserirConsulta")]
         [HttpPost]
-        public IActionResult Insere([FromBody]Consulta consulta)
+        public async Task<IActionResult> Insere([FromBody]Consulta consulta)
         {
             consulta.Id = 0;
 
             if(consulta.Data < DateTime.Now.Date)
                 return BadRequest("Não pode-se cadastrar uma consulta em data inferior a hoje " + DateTime.Now.ToString("dd/MM/yyyy"));
 
-            var pt = PesquisaTudo(consulta);
+            var pt = await _outrosService.PesquisaTudoAsync(consulta);
 
             if(pt == null)
-            {
-                var resultado = _context.Consultas.Add(consulta);
-                _context.SaveChanges();
-                return Ok(resultado.Entity);
-            }
+                return Ok(await _consultaService.InserirConsultaAsync(consulta));
             else
-            {
                 return BadRequest(pt);
-            }
         }
 
         [Route("EditarConsulta")]
         [HttpPut]
-        public IActionResult Edita([FromBody]Consulta consulta)
+        public async Task<IActionResult> Edita([FromBody]Consulta consulta)
         {
             if(consulta.Id == 0)
                 return NotFound("Declare o Id da consulta para poder modificá-la.");    
 
-            var pt = PesquisaTudo(consulta);
+            var pt = await _outrosService.PesquisaTudoAsync(consulta);
 
             if(pt == null)
             {
-                var resultado = _context.Consultas.Update(consulta);
-
                 //Se tentar Editar com um Id inexistente ou errado, causa um erro.
                 try
                 {
-                    _context.SaveChanges();   
-                    return Ok(resultado.Entity);                         
+                    var resultado = await _consultaService.EditarConsulta(consulta);
+                    return Ok(resultado);                         
                 }
-                catch(Exception e)
+                catch(DbUpdateConcurrencyException)
                 {
-                    if(e.HResult == -2146233088) //-2146233088 é o Erro de Id inexistente.
-                        return NotFound(String.Format("Consulta NÃO encontrada para alteração no Id = {0}.", consulta.Id));
-                    else //Outro tipo de erro irá aparecer aqui.
-                        return NotFound(e.ToString());
+                    return NotFound(String.Format("Consulta NÃO encontrada para alteração no Id = {0}.", consulta.Id));
                 }
-            }
-
+            } 
             return BadRequest(pt);
-
         }
 
         [Route("DeletarConsultaPorId")]
         [HttpDelete]
-        public IActionResult Deleta(int id)
+        public async Task<IActionResult> Deleta(int id)
         {
-            var pesquisa = pesquisaConsultaPorId(id).FirstOrDefault();
+            var pesquisa = await _consultaService.pesquisaConsultaPorIdAsync(id);
 
-            if (pesquisa == null)
+            if (pesquisa.Count() == 0)
             {
                 return BadRequest("Id não encontrado.");
             }
             else
             {              
-                _context.Consultas.Remove(pesquisa);
-                _context.SaveChanges();
+                await _consultaService.DeletarConsultaPorConsultaAsync(pesquisa.FirstOrDefault());
                 return Ok();
             }
         }
         
         [Route("DeletarTodasConsultasPorMedicoId")]
         [HttpDelete]
-        public IActionResult DeletaTodasPorMedicoId(int medicoId)
+        public async Task<IActionResult> DeletaTodasPorMedicoId(int medicoId)
         {
-            var pesquisa = _context.Consultas.Where(lambda => lambda.MedicoId == medicoId);
+            var pesquisa = await _consultaService.ConsultasPorMedicoIdAsync(medicoId);
 
             if (pesquisa == null)
-            {
                 return BadRequest("Nenhuma consulta encontrada.");
-            }
-            else
-            {              
-                var medico = _context.Medicos.Where(lambda => lambda.Id == medicoId).FirstOrDefault();
-                foreach(var cadaConsulta in pesquisa)
-                    _context.Consultas.Remove(cadaConsulta);
+              
+            var medico = await _consultaService.pesquisaMedicoPorIdAsync(medicoId);
+            foreach(var cadaConsulta in pesquisa)
+                await _consultaService.DeletarConsultaPorConsultaAsync(cadaConsulta);
 
-                _context.SaveChanges();
-                return Ok( String.Format("Todas consultas do médico {0} deletadas.",medico.Nome));
-            }
+            return Ok($"Todas consultas do médico {medico.FirstOrDefault().Nome} deletadas.");
+
         }
-
-*/
-
-/*
-        private IQueryable<Consulta> pesquisaConsultaPorId(int id)
-        {
-            return _context.Consultas.Where(lambda => lambda.Id == id);
-        }
-        
-*/
     }
 }
