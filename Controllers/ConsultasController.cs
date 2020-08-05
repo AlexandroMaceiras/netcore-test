@@ -5,7 +5,6 @@ using System;
 using Consultas.Services;
 using AlbertEinstein.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AlbertEinstein.Controllers

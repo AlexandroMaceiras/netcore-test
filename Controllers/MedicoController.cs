@@ -33,9 +33,8 @@ namespace AlbertEinstein.Controllers
         public IActionResult Insere([FromBody]Medico medico)
         {
             if(pesquisaMedicoPorNome(medico.Nome).Count() == 0)
-            {
-                if(medico.Id != 0)
-                    medico.Id = 0;
+            {                
+                medico.Id = 0;
 
                 var resultado = _context.Medicos.Add(medico);
                 _context.SaveChanges();
