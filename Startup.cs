@@ -1,6 +1,7 @@
 using AlbertEinstein.Models;
 using AlbertEinstein.Services;
 using Consultas.Services;
+using Medicos.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Pacientes.Services;
 
 namespace AlbertEinstein
 {
@@ -28,6 +30,8 @@ namespace AlbertEinstein
 
             //Registrando a DI (Injeção de Dependência)
              services.AddTransient<IConsultaItemService, ConsultaItemService>(); 
+             services.AddTransient<IMedicoItemService, MedicoItemService>(); 
+             services.AddTransient<IPacienteItemService, PacienteItemService>(); 
              services.AddTransient<IOutrosItemService, OutrosItemService>();
 
             services.AddControllers();
