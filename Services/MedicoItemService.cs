@@ -61,7 +61,7 @@ namespace Medicos.Services
             return eem;            
         }
 
-       public async Task<EntityEntry<Medico>> pesquisaMedicoModelAsync(Medico medico)
+       public async Task<EntityEntry<Medico>> deletaMedicoModelAsync(Medico medico)
        {
            try
            {

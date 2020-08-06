@@ -21,19 +21,16 @@ namespace Pacientes.Services
         {        
             return await _context.Pacientes.ToArrayAsync();    
         }
-/*         public async Task<IEnumerable<Medico>> pesquisaMedicoPorNomeAsync(string nome)
+
+        public async Task<IEnumerable<Consulta>> ConsultaTodasConsultasPorPacienteIdAsync(int id)
         {
-            return await _context.Medicos.Where(lambda => lambda.Nome == nome).ToArrayAsync();
+            return await _context.Consultas.Where(lambda => lambda.PacienteId == id).ToArrayAsync();
         }
-        public async Task<IEnumerable<Medico>> pesquisaMedicoPorIdAsync(int id)
-        {
-            return await _context.Medicos.Where(lambda => lambda.Id == id).ToArrayAsync();
-        }
-        public async Task<bool> InserirMedicoAsync(Medico medico)
+        public async Task<bool> InserirPacienteAsync(Paciente paciente)
         {
             try
             {
-                _context.Medicos.Add(medico);   
+                _context.Pacientes.Add(paciente);   
                 await _context.SaveChangesAsync();
                 return true;
 
@@ -44,36 +41,37 @@ namespace Pacientes.Services
             }
         }
 
-        public async Task<EntityEntry<Consulta>> InserirConsultaNoModuloMedicoAsync(Consulta consulta)
+        public async Task<IEnumerable<Paciente>> pesquisaPacientePorNomeAsync(string nome)
         {
-            var eec = _context.Consultas.Add(consulta);
-            await _context.SaveChangesAsync();
-            return eec;
+            return await _context.Pacientes.Where(lambda => lambda.Nome == nome).ToArrayAsync();
         }
-
-        public async Task<EntityEntry<Medico>> EditarMedicoAsync(Medico medico)
+        public async Task<IEnumerable<Paciente>> pesquisaPacientePorIdAsync(int id)
+        {
+            return await _context.Pacientes.Where(lambda => lambda.Id == id).ToArrayAsync();
+        }
+        
+        public async Task<EntityEntry<Paciente>> EditarPacientesAsync(Paciente paciente)
         {
             //Limpa a instância feita pelo pesquisaMedicoPorIdAsync chamado anteriormente em Asincronismo.
-            _context.Entry(medico).State = EntityState.Deleted;
+            _context.Entry(paciente).State = EntityState.Deleted;
             
-            var eem =_context.Medicos.Update(medico);            
+            var eep =_context.Pacientes.Update(paciente);            
             await _context.SaveChangesAsync();
-            return eem;            
+            return eep;            
         }
 
-       public async Task<EntityEntry<Medico>> pesquisaMedicoModelAsync(Medico medico)
+       public async Task<EntityEntry<Paciente>> deletaPacienteModelAsync(Paciente paciente)
        {
            try
            {
-               var eem = _context.Medicos.Remove(medico);  
+               var eep = _context.Pacientes.Remove(paciente);  
                await _context.SaveChangesAsync();
-               return eem;
+               return eep;
            }
            catch(Exception e)
            {
                throw e;
            }
        }
- */
    }
 }

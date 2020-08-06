@@ -13,6 +13,6 @@ namespace Medicos.Services
         Task<EntityEntry<Consulta>> InserirConsultaNoModuloMedicoAsync(Consulta consulta);
         Task<IEnumerable<Medico>> pesquisaMedicoPorIdAsync(int id);
         Task<EntityEntry<Medico>> EditarMedicoAsync(Medico medico);
-        Task<EntityEntry<Medico>> pesquisaMedicoModelAsync(Medico medico);
+        Task<EntityEntry<Medico>> deletaMedicoModelAsync(Medico medico);
    }
 }
