@@ -30,49 +30,45 @@ namespace AlbertEinstein.Controllers
             else
                 return Ok(pacientes);
         }
-/* 
+
         [Route("ListarTodasConsultasPorPacienteId")]
         [HttpGet]
-        public IActionResult ConsultaTodasConsultasPorPacienteId(int id)
+        public async Task<IActionResult> ConsultaTodasConsultasPorPacienteId(int id)
         {
-             var consulta = _context.Consultas.Where(lambda => lambda.PacienteId == id);
+             var consulta = await _pacienteService.ConsultaTodasConsultasPorPacienteIdAsync(id);
+
+             if(consulta.Count() == 0)
+                return NotFound("Nenhuma consula encontrada para o paciente deste Id.");
 
              return Ok(consulta);
         }
 
         [Route("InserirPaciente")]
         [HttpPost]
-        public IActionResult Insere([FromBody]Paciente paciente)
+        public async Task<IActionResult> Insere([FromBody]Paciente paciente)
         {
-            if(pesquisaPacientePorNome(paciente.Nome).Count() == 0)
-            {
-                if(paciente.Id != 0)
-                    paciente.Id = 0;
-                if(paciente.CPF.Length > 11)
-                    return BadRequest("CPF do paciente está ultrapassando o limite.");
+            paciente.Id = 0;
 
-                var resultado = _context.Pacientes.Add(paciente);
-                _context.SaveChanges();
-                return Ok(resultado.Entity);
-            }
+            var pm = await _pacienteService.pesquisaPacientePorNomeAsync(paciente.Nome);
+
+            if(pm.Count() != 0)
+                return NotFound("Paciente já cadastrado.");
             else
             {
-                return NotFound("Paciente já cadastrado.");
+                await _pacienteService.InserirPacienteAsync(paciente);
+                return Ok(paciente);
             }
+
         }
 
         [Route("EditarPaciente")]
         [HttpPut]
-        public IActionResult Edita([FromBody]Paciente paciente)
+        public async Task<IActionResult> Edita([FromBody]Paciente paciente)
         {
-            if(pesquisaPacientePorId(paciente.Id).Count() == 0)
+            if(_pacienteService.pesquisaPacientePorIdAsync(paciente.Id).Result.Count() == 0)
                 return NotFound("Paciente não encontrado, Id inexistente.");
 
-            if(pesquisaPacientePorNome(paciente.Nome).Count() > 0)
-                return NotFound("Paciente já cadastrado.");
-
-            var resultado = _context.Pacientes.Update(paciente);            
-            _context.SaveChanges();            
+            var resultado = await _pacienteService.EditarPacientesAsync(paciente); 
             return Ok(resultado.Entity);
         }
 
@@ -80,46 +76,30 @@ namespace AlbertEinstein.Controllers
         [HttpDelete]
         public IActionResult Deleta(int id)
         {
-            var pppid = pesquisaPacientePorId(id);
+            var pppid = _pacienteService.pesquisaPacientePorIdAsync(id);
 
-            if (pppid.Count() == 0)
-            {
+            if (pppid.Result.Count() == 0)
                 return NotFound("Paciente não encontrado, Id inexistente.");
-            }
-            else
-            {              
-                _context.Pacientes.Remove(pppid.FirstOrDefault());
-                _context.SaveChanges();
-                return Ok();
-            }
-        }                
+
+            _pacienteService.deletaPacienteModelAsync(pppid.Result.FirstOrDefault());
+            return Ok();
+        }
 
         [Route("DeletarPacientePorNome")]
         [HttpDelete]
-        public IActionResult DeletaPorNome(string nome)
+        public async Task<IActionResult> DeletaPorNome(string nome)
         {
-            var pppn = pesquisaPacientePorNome(nome);
+            var pppn = _pacienteService.pesquisaPacientePorNomeAsync(nome);
 
-            if(pppn.Count() == 0)
+            if(pppn.Result.Count() == 0)
             {
                 return NotFound("Paciente não encontrado, Nome inexistente.");
             }
             else
             {              
-                _context.Pacientes.Remove(pppn.FirstOrDefault());
-                _context.SaveChanges();
+                await _pacienteService.deletaPacienteModelAsync(pppn.Result.FirstOrDefault());
                 return Ok();
             }
         }
-
-
-        private IQueryable<Paciente> pesquisaPacientePorNome(string nome)
-        {
-            return _context.Pacientes.Where(lambda => lambda.Nome == nome);
-        }
-        private IQueryable<Paciente> pesquisaPacientePorId(int id)
-        {
-            return _context.Pacientes.Where(lambda => lambda.Id == id);
-        } */
     }
 }

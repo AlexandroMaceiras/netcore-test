@@ -97,7 +97,7 @@ namespace AlbertEinstein.Controllers
                 return NotFound("Médico não encontrado, Id inexistente.");
 
                       
-            var retorno = await _medicoService.pesquisaMedicoModelAsync(pmpi.FirstOrDefault());
+            var retorno = await _medicoService.deletaMedicoModelAsync(pmpi.FirstOrDefault());
             return Ok(retorno.Entity);
         }
         
@@ -110,7 +110,8 @@ namespace AlbertEinstein.Controllers
             if(pmpn.Count() == 0)
                 return NotFound("Médico não encontrado, Nome inexistente.");
 
-            var retorno =_medicoService.pesquisaMedicoModelAsync(pmpn.FirstOrDefault());
+
+            var retorno = _medicoService.deletaMedicoModelAsync(pmpn.FirstOrDefault());
             return Ok($"O médico {pmpn.FirstOrDefault().Nome} foi deletado.");
         }
     }
