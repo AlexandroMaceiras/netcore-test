@@ -4,14 +4,16 @@ using AlbertEinstein.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AlbertEinstein.Migrations
 {
     [DbContext(typeof(AlbertEinsteinContext))]
-    partial class AlbertEinsteinContextModelSnapshot : ModelSnapshot
+    [Migration("20200807070907_inicio")]
+    partial class inicio
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,6 +61,9 @@ namespace AlbertEinstein.Migrations
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("ExamesId")
+                        .HasColumnType("int");
+
                     b.Property<int>("MedicoId")
                         .HasColumnType("int");
 
@@ -66,6 +71,8 @@ namespace AlbertEinstein.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ExamesId");
 
                     b.ToTable("Consultas");
                 });
@@ -139,6 +146,13 @@ namespace AlbertEinstein.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Pacientes");
+                });
+
+            modelBuilder.Entity("AlbertEinstein.Models.Consulta", b =>
+                {
+                    b.HasOne("AlbertEinstein.Models.Exame", "Exames")
+                        .WithMany()
+                        .HasForeignKey("ExamesId");
                 });
 #pragma warning restore 612, 618
         }
