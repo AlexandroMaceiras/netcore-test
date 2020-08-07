@@ -9,7 +9,7 @@ namespace AlbertEinstein.Models
         [MaxLength(100)]
         public string Nome { get; set; }
         [Required]
-        //[MaxLength(11)]
+        [MaxLength(11)]
         public string CPF { get; set; }
 
     }

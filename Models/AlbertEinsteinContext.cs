@@ -13,6 +13,7 @@ namespace AlbertEinstein.Models
         public DbSet<Paciente> Pacientes { get; set; }
         public DbSet<Consulta> Consultas { get; set; }
         public DbSet<Exame> Exames { get; set; }
+        public DbSet<Avaliacao> Avaliacaos { get; set; }
 
         /* 
         

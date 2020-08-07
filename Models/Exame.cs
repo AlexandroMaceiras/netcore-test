@@ -12,5 +12,9 @@ namespace AlbertEinstein.Models
         public int MedicoId { get; set; }
         [Required]
         public DateTime Data{ get; set; }
+        [Required]
+        public int TipoExame{ get; set; }
+        [Required]
+        public bool FlagAvisar{ get; set; }
     }
 }
