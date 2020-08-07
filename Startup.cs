@@ -1,6 +1,7 @@
 using AlbertEinstein.Models;
 using AlbertEinstein.Services;
 using Consultas.Services;
+using Exames.Services;
 using Medicos.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,6 +33,7 @@ namespace AlbertEinstein
              services.AddTransient<IConsultaItemService, ConsultaItemService>(); 
              services.AddTransient<IMedicoItemService, MedicoItemService>(); 
              services.AddTransient<IPacienteItemService, PacienteItemService>(); 
+             services.AddTransient<IExameItemService, ExameItemService>();
              services.AddTransient<IOutrosItemService, OutrosItemService>();
 
             services.AddControllers();
