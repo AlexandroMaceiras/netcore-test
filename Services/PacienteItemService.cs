@@ -26,6 +26,12 @@ namespace Pacientes.Services
         {
             return await _context.Consultas.Where(lambda => lambda.PacienteId == id).ToArrayAsync();
         }
+        
+        public async Task<IEnumerable<Exame>> ConsultaTodosExamesPorPacienteIdAsync(int id)
+        {
+            return await _context.Exames.Where(lambda => lambda.PacienteId == id && lambda.FlagAvisar).ToArrayAsync();
+        }
+
         public async Task<bool> InserirPacienteAsync(Paciente paciente)
         {
             try
@@ -64,7 +70,18 @@ namespace Pacientes.Services
        {
            try
            {
-               var eep = _context.Pacientes.Remove(paciente);  
+               var eep = _context.Pacientes.Remove(paciente); 
+
+               //Deletando todas as consultas deste paciente junto com ele.
+               var iqc = _context.Consultas.Where(lambda => lambda.PacienteId == paciente.Id);
+               foreach(var item in iqc)
+                    _context.Consultas.Remove(item);  
+
+               //Deletando todas os exames deste paciente junto com ele.
+               var iqe = _context.Exames.Where(lambda => lambda.PacienteId == paciente.Id);
+               foreach(var item in iqe)
+                    _context.Exames.Remove(item);  
+
                await _context.SaveChangesAsync();
                return eep;
            }
@@ -73,5 +90,5 @@ namespace Pacientes.Services
                throw e;
            }
        }
-   }
+    }
 }

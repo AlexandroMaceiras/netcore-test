@@ -10,6 +10,7 @@ namespace Pacientes.Services
     {
         Task<IEnumerable<Paciente>> PegaTodosPacientesAsync();
         Task<IEnumerable<Consulta>> ConsultaTodasConsultasPorPacienteIdAsync(int id);
+        Task<IEnumerable<Exame>> ConsultaTodosExamesPorPacienteIdAsync(int id);
         Task<bool> InserirPacienteAsync(Paciente paciente);
         Task<IEnumerable<Paciente>> pesquisaPacientePorNomeAsync(string nome);
         Task<IEnumerable<Paciente>> pesquisaPacientePorIdAsync(int id);

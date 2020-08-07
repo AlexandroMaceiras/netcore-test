@@ -65,7 +65,21 @@ namespace Medicos.Services
        {
            try
            {
-               var eem = _context.Medicos.Remove(medico);  
+               var eem = _context.Medicos.Remove(medico);
+
+               //Deletando todas as consultas deste médico junto com ele.
+               var iqc = _context.Consultas.Where(lambda => lambda.MedicoId == medico.Id);
+               foreach(var item in iqc)
+                    _context.Consultas.Remove(item);
+                
+               //Zerando todos os exames que este médico fazia parte junto com ele.
+               var iqe = _context.Exames.Where(lambda => lambda.MedicoId == medico.Id);
+               foreach(var item in iqe)
+               {
+                   item.MedicoId = 0;
+                   _context.Exames.Update(item); 
+               }
+
                await _context.SaveChangesAsync();
                return eem;
            }
