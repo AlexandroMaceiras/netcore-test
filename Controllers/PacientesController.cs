@@ -7,7 +7,7 @@ using Pacientes.Services;
 
 namespace AlbertEinstein.Controllers
 {
-    [ApiController]
+    //[ApiController]
     [Route("/Async/IoC/[controller]")]
     public class PacientesController : ControllerBase
     {
@@ -39,6 +39,18 @@ namespace AlbertEinstein.Controllers
 
              if(consulta.Count() == 0)
                 return NotFound("Nenhuma consula encontrada para o paciente deste Id.");
+
+             return Ok(consulta);
+        }
+
+        [Route("ListarTodosExamesPorPacienteId")]
+        [HttpGet]
+        public async Task<IActionResult> ConsultaTodosExamesPorPacienteId(int id)
+        {
+             var consulta = await _pacienteService.ConsultaTodosExamesPorPacienteIdAsync(id);
+
+             if(consulta.Count() == 0)
+                return NotFound("Nenhum exame encontrado para o paciente deste Id.");
 
              return Ok(consulta);
         }

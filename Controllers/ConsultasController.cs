@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AlbertEinstein.Controllers
 {
-    [ApiController]
+    //[ApiController]
     [Route("/Async/IoC/[controller]")]
     public class ConsultasController: ControllerBase
     {
@@ -116,7 +116,7 @@ namespace AlbertEinstein.Controllers
         {
             var pesquisa = await _consultaService.ConsultasPorMedicoIdAsync(medicoId);
 
-            if (pesquisa == null)
+            if (pesquisa.Count() == 0)
                 return BadRequest("Nenhuma consulta encontrada.");
               
             var medico = await _consultaService.pesquisaMedicoPorIdAsync(medicoId);

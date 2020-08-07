@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using AlbertEinstein.Models;
 using System;
 using AlbertEinstein.Services;
-using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Medicos.Services;
 
 namespace AlbertEinstein.Controllers
 {
-    [ApiController]
+    //[ApiController]
     [Route("/Async/IoC/[controller]")]
     public class MedicosController: ControllerBase
     {
