@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AlbertEinstein.Models;
@@ -43,7 +44,7 @@ namespace AlbertEinstein.Controllers
              return Ok(consulta);
         }
 
-        [Route("ListarTodosExamesPorPacienteId")]
+        [Route("ListarTodosExamesASerAvisadoPorPacienteId")]
         [HttpGet]
         public async Task<IActionResult> ConsultaTodosExamesPorPacienteId(int id)
         {
@@ -86,14 +87,14 @@ namespace AlbertEinstein.Controllers
 
         [Route("DeletarPacientePorId")]
         [HttpDelete]
-        public IActionResult Deleta(int id)
+        public async Task<IActionResult> Deleta(int id)
         {
             var pppid = _pacienteService.pesquisaPacientePorIdAsync(id);
 
             if (pppid.Result.Count() == 0)
                 return NotFound("Paciente não encontrado, Id inexistente.");
 
-            _pacienteService.deletaPacienteModelAsync(pppid.Result.FirstOrDefault());
+            await _pacienteService.deletaPacienteModelAsync(pppid.Result.FirstOrDefault());
             return Ok();
         }
 
@@ -104,14 +105,11 @@ namespace AlbertEinstein.Controllers
             var pppn = _pacienteService.pesquisaPacientePorNomeAsync(nome);
 
             if(pppn.Result.Count() == 0)
-            {
                 return NotFound("Paciente não encontrado, Nome inexistente.");
-            }
-            else
-            {              
-                await _pacienteService.deletaPacienteModelAsync(pppn.Result.FirstOrDefault());
-                return Ok();
-            }
+         
+            await _pacienteService.deletaPacienteModelAsync(pppn.Result.FirstOrDefault());
+            return Ok();
+
         }
     }
 }

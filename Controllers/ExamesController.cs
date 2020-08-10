@@ -34,7 +34,7 @@ namespace AlbertEinstein.Controllers
                 return Ok(examess);
         }
  
-        [Route("ListarTodasExamesPorMedicoId")]
+        [Route("ListarTodosExamesPorMedicoId")]
         [HttpGet]
         public async Task<IActionResult> ExameTodasPorMedicoId(int id)
         {
@@ -46,7 +46,7 @@ namespace AlbertEinstein.Controllers
              var exames = await _examesService.ExamesPorMedicoIdAsync(id);
 
              if(exames.Count() == 0)
-                return NotFound($"Nenhuma exames encontrato para o médico {medico.FirstOrDefault().Nome}.");
+                return NotFound($"Nenhuma exame encontrato para o médico {medico.FirstOrDefault().Nome}.");
 
              return Ok(exames);
         }
@@ -58,16 +58,17 @@ namespace AlbertEinstein.Controllers
             exames.Id = 0;
 
             if(exames.TipoExame == 0)
-                return BadRequest("Não pode-se cadastrar uma exames em data inferior a hoje " + DateTime.Now.ToString("dd/MM/yyyy"));
+                return BadRequest("Definir o tipo de exame é obrigatório.");
 
-                Consulta cc = new Consulta()
-                {
-                    Id = exames.Id,
-                    MedicoId = exames.MedicoId,
-                    PacienteId = exames.PacienteId
-                };
+            Consulta consulta = new Consulta()
+            {
+                Id          = exames.Id,
+                MedicoId    = exames.MedicoId,
+                PacienteId  = exames.PacienteId,
+                Data        = exames.Data
+            };
 
-            var pt = await _outrosService.PesquisaTudoAsync(cc);
+            var pt = await _outrosService.PesquisaTudoAsync(consulta);
 
             if(pt == null)
                 return Ok(await _examesService.InserirExameAsync(exames));
